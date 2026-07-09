@@ -18,7 +18,7 @@ import {
 import './index.css';
 
 const DerykLogo = () => (
-  <img src="/design9.png" alt="DERYK Logo" className="w-[41px] h-[52px] object-cover flex-none" />
+  <img src="/sidebar-logo.png" alt="DERYK Logo" className="w-[41px] h-[52px] object-cover flex-none" />
 );
 
 function App() {
@@ -58,7 +58,7 @@ function App() {
             ) : (
               <div className="flex flex-col items-center w-full gap-6 pt-4 mt-[28px]">
                 <div className="flex items-center justify-center p-2 mb-4 w-[41px]">
-                  <img src="/design9.png" alt="Logo" className="w-full h-auto object-cover" />
+                  <img src="/sidebar-logo.png" alt="Logo" className="w-full h-auto object-cover" />
                 </div>
                 <SidebarIcon size={19} className="cursor-pointer text-[#938F8F] hover:text-white" onClick={toggleSidebar} />
               </div>
@@ -122,51 +122,49 @@ function App() {
 
         {/* Header */}
         <div className="flex justify-between items-center p-6 w-full relative z-10">
-          <div className="text-xl font-semibold tracking-widest flex items-center gap-2">
-             <span className="text-gray-300">D E R Y &lt;</span>
-          </div>
-          <Bell size={20} className="text-gray-400 cursor-pointer hover:text-white transition-colors" />
+          <img src="/logo.png" alt="DERYK Logo" className="w-[140px] h-auto object-contain ml-2 mt-2" />
+          <Bell size={22} className="text-gray-400 cursor-pointer hover:text-white transition-colors mr-2" />
         </div>
 
         {/* Center Content */}
         <div className="flex-1 flex flex-col items-center justify-center relative z-10 w-full px-8 pb-32">
           
-          <h1 className="neuton-font font-normal text-[70px] leading-[89px] mb-8">Hello User</h1>
+          <h1 className="neuton-font font-normal text-4xl md:text-5xl mb-6">Hello User</h1>
 
           {/* Chat Input */}
-          <div className="w-full max-w-[881px] h-[202px] bg-[#878787]/50 rounded-[30px] flex flex-col relative justify-between pt-[26px] pb-6 px-11 border border-transparent backdrop-blur-md">
+          <div className="w-full max-w-2xl h-[130px] bg-[#878787]/50 rounded-[20px] flex flex-col relative justify-between pt-4 pb-3 px-6 border border-transparent backdrop-blur-md">
             <input 
               type="text" 
               placeholder="what is your mission ?" 
-              className="w-full bg-transparent border-none outline-none text-[24px] font-semibold text-white/50 h-[29px]"
+              className="w-full bg-transparent border-none outline-none text-lg font-semibold text-white/50"
             />
             
-            <div className="flex items-center justify-end w-full gap-4 mt-auto mb-2">
-              <span className="text-[19px] text-white/70 flex items-center cursor-pointer transition-colors mr-1">
-                Mission Agent <span className="ml-2 text-xs border border-gray-500 rounded px-1.5 py-0.5">v</span>
+            <div className="flex items-center justify-end w-full gap-3 mt-auto">
+              <span className="text-sm text-white/70 flex items-center cursor-pointer transition-colors mr-1">
+                Mission Agent <span className="ml-1 text-[9px] border border-gray-500 rounded px-1 py-0.5">v</span>
               </span>
               
-              <button className="w-[49px] h-[44px] rounded-[14px] bg-[#6495ED] flex items-center justify-center hover:bg-blue-400 transition-colors cursor-pointer border-none outline-none">
-                <ArrowUp size={24} strokeWidth={2.5} className="text-[#1E1E1E]" />
+              <button className="w-8 h-7 rounded-lg bg-[#6495ED] flex items-center justify-center hover:bg-blue-400 transition-colors cursor-pointer border-none outline-none">
+                <ArrowUp size={16} strokeWidth={2.5} className="text-[#1E1E1E]" />
               </button>
               
-              <Mic size={28} strokeWidth={1.5} className="text-white cursor-pointer hover:text-gray-200 transition-colors ml-2" />
-              <AudioLines size={28} strokeWidth={1.5} className="text-white cursor-pointer hover:text-gray-200 transition-colors" />
+              <Mic size={18} strokeWidth={1.5} className="text-white cursor-pointer hover:text-gray-200 transition-colors ml-1" />
+              <AudioLines size={18} strokeWidth={1.5} className="text-white cursor-pointer hover:text-gray-200 transition-colors" />
             </div>
           </div>
 
           {/* Pill Suggestions */}
-          <div className="flex flex-wrap justify-center gap-[22px] mt-8 w-full max-w-[881px]">
-            <button className="flex items-center gap-[10px] px-4 py-3 bg-[#4F4F4F] rounded-[49px] text-[13px] text-white hover:bg-[#5a5a5a] transition-colors border-none outline-none">
-              <ActivitySquare size={16} />
+          <div className="flex flex-wrap justify-center gap-3 mt-4 w-full max-w-2xl">
+            <button className="flex items-center gap-2 px-3 py-2 bg-[#4F4F4F] rounded-full text-xs text-white hover:bg-[#5a5a5a] transition-colors border-none outline-none">
+              <ActivitySquare size={12} />
               Diagnose a telemetry anomaly
             </button>
-            <button className="flex items-center gap-[10px] px-4 py-3 bg-[#4F4F4F] rounded-[43px] text-[15px] text-white hover:bg-[#5a5a5a] transition-colors border-none outline-none">
-              <Zap size={16} />
+            <button className="flex items-center gap-2 px-3 py-2 bg-[#4F4F4F] rounded-full text-xs text-white hover:bg-[#5a5a5a] transition-colors border-none outline-none">
+              <Zap size={12} />
               Plan a fleet mission
             </button>
-            <button className="flex items-center gap-[10px] px-[19px] py-3 bg-[#4F4F4F] rounded-[34px] text-[15px] text-white hover:bg-[#5a5a5a] transition-colors border-none outline-none">
-              <Clock size={20} />
+            <button className="flex items-center gap-2 px-4 py-2 bg-[#4F4F4F] rounded-full text-xs text-white hover:bg-[#5a5a5a] transition-colors border-none outline-none">
+              <Clock size={12} />
               How PIMS retrieval works
             </button>
           </div>
