@@ -25,7 +25,12 @@ app = FastAPI(title="DERYK API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5183"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:5183",
+        "http://192.168.29.249:5183",
+        "https://manicotti-muck-unsent.ngrok-free.dev",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -83,7 +88,7 @@ def google_auth(payload: GoogleAuthRequest, db: Session = Depends(get_db)):
     except ValueError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Google sign-in token")
 
-    firebase_uid = claims["uid"]
+    firebase_uid = claims["sub"]
     email = claims.get("email", "").lower()
     display_name = claims.get("name") or email.split("@")[0]
 

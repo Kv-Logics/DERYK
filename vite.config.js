@@ -8,4 +8,11 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    proxy: {
+      '/auth': 'http://localhost:8000',
+      '/chats': 'http://localhost:8000',
+    },
+    allowedHosts: ['manicotti-muck-unsent.ngrok-free.dev'],
+  },
 })

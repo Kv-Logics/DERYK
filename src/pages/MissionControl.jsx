@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../lib/api';
+import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 
 const DerykLogo = () => (
   <img src="/sidebar-logo.png" alt="DERYK Logo" className="w-[41px] h-[52px] object-cover flex-none" />
@@ -62,6 +63,17 @@ export default function MissionControl() {
       e.preventDefault();
       handleSend();
     }
+  };
+
+  const { supported: micSupported, listening, start: startListening, stop: stopListening } =
+    useSpeechRecognition({
+      onResult: (transcript) =>
+        setMissionText((prev) => (prev ? `${prev} ${transcript}` : transcript)),
+    });
+
+  const toggleMic = () => {
+    if (listening) stopListening();
+    else startListening();
   };
 
   return (
@@ -212,7 +224,21 @@ export default function MissionControl() {
                 <ArrowUp size={16} strokeWidth={2.5} className="text-[#1E1E1E]" />
               </button>
 
-              <Mic size={18} strokeWidth={1.5} className="text-white cursor-pointer hover:text-gray-200 transition-colors ml-1" />
+              <Mic
+                size={18}
+                strokeWidth={1.5}
+                onClick={micSupported ? toggleMic : undefined}
+                title={
+                  micSupported
+                    ? listening
+                      ? 'Listening... click to stop'
+                      : 'Search by voice'
+                    : 'Voice input is not supported in this browser'
+                }
+                className={`ml-1 transition-colors ${
+                  micSupported ? 'cursor-pointer hover:text-gray-200' : 'cursor-not-allowed opacity-40'
+                } ${listening ? 'animate-pulse text-red-400' : 'text-white'}`}
+              />
               <AudioLines size={18} strokeWidth={1.5} className="text-white cursor-pointer hover:text-gray-200 transition-colors" />
             </div>
           </div>
