@@ -40,4 +40,6 @@ export const api = {
   listChats: (token) => request('/chats', { token }),
   createChat: (token, title) =>
     request('/chats', { method: 'POST', token, body: JSON.stringify({ title }) }),
+  deleteChat: (token, chatId) =>
+    request(`/chats/${chatId}`, { method: 'DELETE', token }),
 };

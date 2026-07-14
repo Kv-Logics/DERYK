@@ -7,7 +7,7 @@ import {
   ClipboardList,
   Activity,
   Map,
-  MoreVertical,
+  Trash2,
   Plus,
   Mic,
   ArrowUp,
@@ -74,6 +74,18 @@ export default function MissionControl() {
   const toggleMic = () => {
     if (listening) stopListening();
     else startListening();
+  };
+
+  const handleDeleteChat = async (chatId) => {
+    if (!window.confirm('Delete this chat? This cannot be undone.')) return;
+    const previous = chats;
+    setChats((prev) => prev.filter((c) => c.id !== chatId));
+    try {
+      await api.deleteChat(token, chatId);
+    } catch {
+      // restore on failure so the user doesn't silently lose the row
+      setChats(previous);
+    }
   };
 
   return (
@@ -145,7 +157,13 @@ export default function MissionControl() {
                 {chats.map((chat) => (
                   <div key={chat.id} className="fade-up flex justify-between items-center text-[0.85rem] text-[#94A3B8] cursor-pointer hover:text-white group transition-colors">
                     <span className="truncate mr-2 flex-1">{chat.title}</span>
-                    <MoreVertical size={14} className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                    <button
+                      onClick={() => handleDeleteChat(chat.id)}
+                      title="Delete chat"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 text-[#94A3B8] hover:text-red-400 border-none bg-transparent outline-none cursor-pointer p-0"
+                    >
+                      <Trash2 size={14} />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -191,10 +209,9 @@ export default function MissionControl() {
               className="text-gray-300 cursor-pointer hover:text-white transition-colors md:hidden"
               onClick={() => setMobileOpen(true)}
             />
-            <a className="mc-logo">
+            <span className="mc-logo">
               <img src="/logo.png" alt="DERYK Logo" className="w-[110px] sm:w-[140px] h-auto object-contain" />
-              <span className="mc-logo-bar" style={{ width: '100%' }} />
-            </a>
+            </span>
           </div>
           <div className="flex items-center gap-4">
             <div className="status-chip hidden sm:flex">
@@ -215,7 +232,7 @@ export default function MissionControl() {
           {/* Chat Input */}
           <div className="input-wrap relative w-full max-w-2xl fade-up d-2">
             <div className="input-glow" />
-            <div className="input-card relative w-full min-h-[130px] bg-[#878787]/50 rounded-[20px] flex flex-col justify-between pt-4 pb-3 px-4 sm:px-6 border border-transparent backdrop-blur-md">
+            <div className="input-card relative w-full min-h-[130px] bg-[#141922]/80 rounded-[20px] flex flex-col justify-between pt-4 pb-3 px-4 sm:px-6 border border-white/[0.08] backdrop-blur-md">
               <input
                 type="text"
                 placeholder="what is your mission ?"

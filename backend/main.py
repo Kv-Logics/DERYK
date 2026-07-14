@@ -148,6 +148,17 @@ def get_owned_chat(chat_id, current_user: User, db: Session) -> Chat:
     return chat
 
 
+@app.delete("/chats/{chat_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_chat(
+    chat_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    chat = get_owned_chat(chat_id, current_user, db)
+    db.delete(chat)  # messages cascade-delete via the relationship
+    db.commit()
+
+
 @app.get("/chats/{chat_id}/messages", response_model=list[MessageOut])
 def list_messages(
     chat_id: str,
