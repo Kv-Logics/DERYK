@@ -1,5 +1,9 @@
+import json
+import time
+
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
 from sqlalchemy.exc import IntegrityError
@@ -7,12 +11,14 @@ from sqlalchemy.orm import Session
 
 from database import Base, engine, get_db
 from firebase_auth import verify_firebase_id_token
-from models import Chat, User
+from models import Chat, Message, User
 from schemas import (
     ChatCreate,
     ChatOut,
     GoogleAuthRequest,
     LoginRequest,
+    MessageCreate,
+    MessageOut,
     SignupRequest,
     TokenResponse,
     UserOut,
@@ -133,3 +139,61 @@ def create_chat(
     db.commit()
     db.refresh(chat)
     return chat
+
+
+def get_owned_chat(chat_id, current_user: User, db: Session) -> Chat:
+    chat = db.query(Chat).filter(Chat.id == chat_id, Chat.user_id == current_user.id).first()
+    if not chat:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Chat not found")
+    return chat
+
+
+@app.get("/chats/{chat_id}/messages", response_model=list[MessageOut])
+def list_messages(
+    chat_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    chat = get_owned_chat(chat_id, current_user, db)
+    return chat.messages
+
+
+# Placeholder reply until the real agent runtime (Bedrock + LangGraph) replaces it.
+_PLACEHOLDER_REPLY = (
+    "This is a placeholder response — the real agent isn't wired up yet, "
+    "but the message pipeline (storage + streaming) is working."
+)
+
+
+def _stream_reply(chat_id: str, reply_text: str):
+    db = next(get_db())
+    try:
+        words = reply_text.split(" ")
+        for i, word in enumerate(words):
+            chunk = word if i == 0 else f" {word}"
+            yield f"data: {json.dumps({'delta': chunk})}\n\n"
+            time.sleep(0.03)
+
+        assistant_message = Message(chat_id=chat_id, role="assistant", content=reply_text)
+        db.add(assistant_message)
+        db.commit()
+        db.refresh(assistant_message)
+        yield f"data: {json.dumps({'done': True, 'message_id': str(assistant_message.id)})}\n\n"
+    finally:
+        db.close()
+
+
+@app.post("/chats/{chat_id}/messages")
+def create_message(
+    chat_id: str,
+    payload: MessageCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    chat = get_owned_chat(chat_id, current_user, db)
+
+    user_message = Message(chat_id=chat.id, role="user", content=payload.content)
+    db.add(user_message)
+    db.commit()
+
+    return StreamingResponse(_stream_reply(str(chat.id), _PLACEHOLDER_REPLY), media_type="text/event-stream")

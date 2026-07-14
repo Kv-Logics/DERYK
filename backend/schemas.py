@@ -46,3 +46,17 @@ class ChatOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class MessageCreate(BaseModel):
+    content: str
+
+
+class MessageOut(BaseModel):
+    id: UUID
+    role: str
+    content: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
